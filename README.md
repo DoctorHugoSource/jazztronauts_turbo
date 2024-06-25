@@ -1,3 +1,5 @@
+Big note: This project is not my creation, I just made a fork of it!!!! Everything below is from the original page (including the dono link which i am leaving in)
+
 [![ko-fi](https://www.ko-fi.com/img/donate_sm.png)](https://ko-fi.com/N4N6H7ZH)
 
 # Jazztronauts
