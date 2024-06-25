@@ -1,0 +1,6 @@
+"VertexlitGeneric"
+{
+	"$basetexture" "splayn/belair/grey64"
+	"$nocull" 1
+	"$envmap" "env_cubemap"
+}

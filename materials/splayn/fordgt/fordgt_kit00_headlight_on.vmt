@@ -1,0 +1,6 @@
+"VertexlitGeneric"
+{
+	"$basetexture" "splayn/fordgt/FORDGT_KIT00_HEADLIGHT_ON"
+	"$envmap" "env_cubemap"
+	 $envmapmask  "splayn/fordgt/lack"
+}

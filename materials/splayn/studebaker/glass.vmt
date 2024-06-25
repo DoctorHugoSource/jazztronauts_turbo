@@ -1,0 +1,7 @@
+"VertexlitGeneric"
+{
+	"$basetexture" "splayn/Studebaker/Glass"
+	"$envmap" "env_cubemap"
+	 $envmapmask  "splayn/studebaker/liner_env"
+	"$translucent" 1
+}

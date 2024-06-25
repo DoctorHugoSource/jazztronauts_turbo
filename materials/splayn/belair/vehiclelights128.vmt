@@ -1,0 +1,7 @@
+"VertexlitGeneric"
+{
+	"$basetexture" "splayn/belair/vehiclelights128"
+	"$nocull" 1
+	"$envmap" "env_cubemap"
+	 $envmapmask  "splayn/belair/liner_env"
+}

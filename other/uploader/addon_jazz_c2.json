@@ -1,0 +1,22 @@
+{
+	"title"		:	"Jazztronauts - Content (2/2)",
+	"type"		:	"gamemode",
+	"tags"		:	[ "fun", "cartoon" ],
+	"ignore"	:
+	[
+		".gitignore",
+		".git/*",
+		"*.yml",
+		"*.md",
+		"*.py",
+		"*.vmf",
+		"*.bat",
+		"*.tga",
+		"*.bak",
+		"sound/*.txt",
+		"models/*.txt",
+		"addon.gma",
+		"addon.jpg",
+		"other/*"
+	]
+}

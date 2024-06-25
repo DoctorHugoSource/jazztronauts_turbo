@@ -1,0 +1,5 @@
+"VertexlitGeneric"
+{
+	"$basetexture" "splayn/Studebaker/body_chrom"
+	"$envmap" "env_cubemap"
+}

@@ -1,0 +1,7 @@
+"VertexlitGeneric"
+{
+	"$basetexture" "splayn/h2/h2body_S1"
+	"$envmap" "env_cubemap"
+	"$nocull" 1
+	 $envmapmask  "splayn/h2/liner_env"
+}

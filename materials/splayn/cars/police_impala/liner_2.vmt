@@ -1,0 +1,7 @@
+"VertexlitGeneric"
+{
+	"$basetexture" "splayn/cars/police_impala/liner_2"
+	"$nocull" 1
+	"$envmap" "env_cubemap"
+	$envmapmask  "splayn/cars/police_impala/liner_env"
+}

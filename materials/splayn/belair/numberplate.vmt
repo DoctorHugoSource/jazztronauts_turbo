@@ -1,0 +1,5 @@
+"VertexlitGeneric"
+{
+	"$basetexture" "splayn/belair/Numberplate"
+	"$nocull" 1
+}

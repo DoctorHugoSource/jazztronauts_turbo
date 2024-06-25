@@ -1,0 +1,6 @@
+"VertexlitGeneric"
+{
+	"$basetexture" "splayn/fordgt/brake"
+	"$envmap" "env_cubemap"
+	 $envmapmask  "splayn/fordgt/lack"
+}

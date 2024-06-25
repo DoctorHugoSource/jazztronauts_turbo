@@ -1,0 +1,7 @@
+"VertexlitGeneric"
+{
+	"$basetexture" "splayn/FMFGT/Bodytex_4"
+	"$envmap" "env_cubemap"
+	 $envmapmask  "splayn/h2/liner_env"
+	"$nocull" 1
+}

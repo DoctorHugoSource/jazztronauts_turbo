@@ -1,0 +1,5 @@
+"VertexlitGeneric"
+{
+	"$basetexture" "splayn/camaro/vehiclegeneric256"
+	"$nocull" 1
+}

@@ -1,0 +1,5 @@
+"VertexlitGeneric"
+{
+	"$basetexture" "splayn/FMFGT/chrome"	
+	"$envmap" "env_cubemap"
+}

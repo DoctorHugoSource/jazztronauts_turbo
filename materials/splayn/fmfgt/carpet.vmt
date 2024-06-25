@@ -1,0 +1,5 @@
+"VertexlitGeneric"
+{
+	"$basetexture" "splayn/FMFGT/Carpet"
+	"$nocull" 1
+}

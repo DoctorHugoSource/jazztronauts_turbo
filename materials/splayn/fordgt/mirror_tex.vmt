@@ -1,0 +1,5 @@
+"VertexlitGeneric"
+{
+	"$basetexture" "splayn/fordgt/mirror_tex"
+	"$envmap" "env_cubemap"
+}

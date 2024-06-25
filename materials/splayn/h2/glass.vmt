@@ -1,0 +1,8 @@
+"VertexlitGeneric"
+{
+	"$basetexture" "splayn/h2/Glass"
+	"$nocull" 1
+	"$translucent" 1
+	"$envmap" "env_cubemap"
+	 $envmapmask  "splayn/h2/liner_env"
+}

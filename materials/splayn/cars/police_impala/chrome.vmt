@@ -1,0 +1,5 @@
+"VertexlitGeneric"
+{
+	"$basetexture" "splayn/cars/police_impala/chrome"	
+	"$envmap" "env_cubemap"
+}

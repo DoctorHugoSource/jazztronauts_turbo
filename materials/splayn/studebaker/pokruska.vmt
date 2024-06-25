@@ -1,0 +1,22 @@
+"VertexlitGeneric"
+{
+	"$basetexture" "splayn/Studebaker/pokruska"
+	"$bumpmap" "splayn/Studebaker/pokruska_norm"
+	"$phong" "1"
+	"$phongexponent" "5"
+	"$phongboost" "0.5"	
+	"$phongfresnelranges"	"[.3 1 8]"
+	"$phongtint"	"[.2 .2 .2]"
+	//"$halflambert" "1"
+
+	// Rim lighting parameters
+	"$rimlight" "0"												// To enable rim lighting (requires phong)
+	"$rimlightexponent" "500"										// Exponent for phong component of rim lighting	
+	"$rimlightboost" ".5"
+	"$rimlighttint" "[0.2 0.2 0.2]"
+	"$envmap" "env_cubemap"
+	"$envmapfresnel" "1"
+	"$envmapFresnelMinMaxExp" "[.2 .2 .2]"
+	"$envmaptint" "[.15 .15 .15]"
+}
+

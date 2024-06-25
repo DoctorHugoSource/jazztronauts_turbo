@@ -1,0 +1,16 @@
+"VertexlitGeneric"
+{
+	"$basetexture" "splayn/fordgt/conti"
+	"$translucent" 1
+	"$bumpmap" "splayn/fordgt/conti_norm"
+	"$phong" "1"
+	"$phongexponent" "20"
+	"$phongboost" ".3"	
+	"$phongfresnelranges"	"[.3 1 8]"
+	"$halflambert" "1"
+
+	// Rim lighting parameters
+	"$rimlight" "0"												// To enable rim lighting (requires phong)
+	"$rimlightexponent" "4"										// Exponent for phong component of rim lighting	
+	"$rimlightboost" "1"	
+}

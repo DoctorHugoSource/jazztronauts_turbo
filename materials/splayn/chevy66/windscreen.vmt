@@ -1,0 +1,8 @@
+"VertexlitGeneric"
+{
+	"$basetexture" "splayn/chevy66/windscreen"
+	"$nocull" 1
+	"$translucent" 1
+	"$envmap" "env_cubemap"
+	"$envmapmask"  "splayn/chevy66/wood_env"
+}
