@@ -22,7 +22,7 @@ if SERVER then
 		self:SetSelector(ents.FindByClass("jazz_hub_selector")[1])
 
 		local id = math.random(1, 1000)
-		if self.FactName then
+		if self.FactName and self.FactName ~= "" then
 			id = factgen.GetFactIDByName(self.FactName, true)
 		else
 			id = self:EntIndex()
@@ -61,8 +61,6 @@ end
 
 if SERVER then return end
 
-include("jazz_localize.lua")
-
 local function randomlocalization(strang)
 	
 	if strang == nil then return nil end
@@ -80,9 +78,9 @@ local function randomlocalization(strang)
 	}
 	local localizationstrs = setmetatable(localizationtable, {__index = function() return "" end} )
 
-	return JazzLocalize(strang..localizationstrs[math.random(#localizationstrs+3)]) -- 3 (or more if it's present) times more likely to display our language, with others mixed in for flavor]]
+	return jazzloc.Localize(strang..localizationstrs[math.random(#localizationstrs+3)]) -- 3 (or more if it's present) times more likely to display our language, with others mixed in for flavor]]
 	
-	return JazzLocalize(strang)
+	return jazzloc.Localize(strang)
 end
 
 local RTWidth = 512
@@ -97,19 +95,19 @@ surface.CreateFont( "FactScreenFont", {
 	font	  = "VCR OSD Mono",
 	size	  = 35,
 	weight	= 700,
-	antialias = true
+	antialias = false
 })
 surface.CreateFont( "FactScreenTitle", {
 	font	  = "VCR OSD Mono",
 	size	  = 55,
 	weight	= 700,
-	antialias = true
+	antialias = false
 })
 surface.CreateFont( "FactScreenError", {
 	font	  = "VCR OSD Mono",
 	size	  = 25,
 	weight	= 700,
-	antialias = true
+	antialias = false
 })
 
 -- Render a test pattern that actually fits on these monitors
@@ -132,6 +130,7 @@ local function renderFact(rt, f, title, bgcolor, font)
 
 	rt:Render( function()
 		local mostr = "<font=" .. (font or "FactScreenFont") ..">" .. randomlocalization(f.fact) .. "</font>"
+		mostr = string.Replace(mostr,"‚",",") --replaces U+201A "Single Low-9 Quotation Mark" with comma (we're done with localization, commas are safe again)
 		local mo = markup.Parse(mostr, RTWidth * 0.98)
 
 		cam.Start2D()
@@ -208,7 +207,7 @@ end
 local function loadOwner(rt, f)
 	steamworks.RequestPlayerInfo(f.fact, function(name)
 		f.fact = name or f.fact
-		renderFact(rt, f, "Owner")
+		renderFact(rt, f, "jazz.fact.owner")
 	end )
 end
 

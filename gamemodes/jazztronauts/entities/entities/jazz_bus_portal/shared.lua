@@ -405,7 +405,7 @@ end
 function ENT:DrawInteriorDoubles()
 	local portalPos, portalAng = self:GetPortalPosAng()
 	local barterrainPos = self:GetPortalPosAng() + Vector(-23000, 10000, -7000)
---	local barterrainScale = self:Scale(0.1, 0,1)
+	--	local barterrainScale = self:Scale(0.1, 0,1)
 
 	-- Define our own lighting environment for this
 	render.SuppressEngineLighting(true)
@@ -465,7 +465,7 @@ function ENT:DrawInteriorDoubles()
 	self.VoidRoad:SetupBones()
 	self.VoidRoad:DrawModel()
 
--- a test to see if you can make it seem like the bar is 'visible in the distance' when traveling through the void
+	-- a test to see if you can make it seem like the bar is 'visible in the distance' when traveling through the void
 	self.VoidBar:SetPos(barterrainPos)
 	self.VoidBar:SetAngles(portalAng)
 	self.VoidBar:SetupBones()

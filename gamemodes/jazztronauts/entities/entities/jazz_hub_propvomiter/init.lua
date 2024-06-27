@@ -1,25 +1,25 @@
 AddCSLuaFile("cl_init.lua")
 
 if not ConVarExists("jazz_propvomiter_speed") then
-	
+
 	CreateConVar("jazz_propvomiter_speed", "2", FCVAR_ARCHIVE)
 
 end
 
 if not ConVarExists("jazz_propvomiter_stuckchance") then
-	
+
 	CreateConVar("jazz_propvomiter_stuckchance", "50", FCVAR_ARCHIVE)
 
 end
 
 if not ConVarExists("jazz_propvomiter_stuckminamount") then
-	
+
 	CreateConVar("jazz_propvomiter_stuckminamount", "100", FCVAR_ARCHIVE)
 
 end
 
 if not ConVarExists("jazz_propvomiter_stuckvomitamount") then
-	
+
 	CreateConVar("jazz_propvomiter_stuckvomitamount", "100", FCVAR_ARCHIVE)
 
 end
@@ -42,6 +42,7 @@ ENT.DisableDuplicator = true
 ENT.VomitMusicFile = Sound("jazztronauts/music/trash_chute_music_loop.wav")
 ENT.VomitFinishFile = Sound("jazztronauts/music/trash_chute_music_stop.wav")
 ENT.VomitEmptyFile = Sound("jazztronauts/music/trash_chute_music_empty.wav")
+
 ENT.StartDelay = 0 -- Delay before anything at all happens
 ENT.MusicDelay = 3.5 -- Delay to let the music play before props begin to fall
 ENT.ConstipateDelay = 10.5 -- Delay when the tube is constipated
@@ -52,9 +53,13 @@ unlocks.Register(propr_unlock_list)
 
 local randomGibProps =
 {
-
-	Model("models/props_debris/WoodC1.mdl"),
-
+	Model("models/props_debris/WoodC1.mdl"),  -- reduce the amount of unrelated garbage coming out of the pipe
+											  -- it's more fun to actually see precisely what youve stolens instead of a bunch of fluff
+	-- Model("models/props_interiors/Furniture_Vanity01a.mdl"),
+	-- Model("models/props_interiors/Furniture_Desk01a.mdl"),
+	-- Model("models/props_junk/wood_crate001a_damaged.mdl"),
+	-- Model("models/props_junk/wood_pallet001a.mdl"),
+	-- Model("models/props_c17/FurnitureTable001a.mdl")
 }
 
 local groanSounds =
@@ -79,6 +84,11 @@ local outputs =
 	"OnVomitStartEmpty"
 }
 
+
+function ENT:SetupDataTables()
+	self:NetworkVar("Vector", 0, "Marker")
+end
+
 -- Task for precaching models over a few frames so we dont destroy everyone
 local function PrecacheProps(props)
 	for _, v in pairs(props) do
@@ -97,10 +107,11 @@ local function CreatePrecacheTask(props, callback)
 	end
 end
 
-local function UpdatePlayerPropMarker(ply, enabled)
+local function UpdatePlayerPropMarker(ply, enabled, marker)
 
 	net.Start("jazz_propvom_propsavailable")
 		net.WriteBool(enabled)
+		net.WriteVector(marker)
 	net.Send(ply)
 end
 
@@ -109,6 +120,10 @@ function ENT:Initialize()
 end
 
 function ENT:KeyValue( key, value )
+	if key == "marker" then
+		local marker = Vector(value) or Vector(self:GetPos())
+		self:SetMarker(marker)
+	end
 
 	if table.HasValue(outputs, key) then
 		self:StoreOutput(key, value)
@@ -197,7 +212,7 @@ function ENT:VomitNewProps(ply)
 		jazzboards.AddSessionProps(self.CurrentUser:SteamID64(), self.TotalCount)
 	end
 
-	UpdatePlayerPropMarker(self.CurrentUser, false)
+	UpdatePlayerPropMarker(self.CurrentUser, false, self:GetMarker())
 
 	-- Precache all the props first, then start the show
 	self.StartAt = math.huge
@@ -205,11 +220,6 @@ function ENT:VomitNewProps(ply)
 	CreatePrecacheTask(self.SpawnQueue, function()
 		local loadTime = CurTime() - loadStartTime
 		print("LOAD TOOK: " .. loadTime .. " seconds!")
-
-		-- Add this as a 'session' prop for leaderboards
-		if IsValid(self.CurrentUser) then
-			jazzboards.AddSessionProps(self.CurrentUser:SteamID64(), self.TotalCount)
-		end
 
 		-- Random chance for the pipe to be constipated
 		local empty = next(self.SpawnQueue) == nil
@@ -357,6 +367,19 @@ function ENT:AcceptInput( name, activator, caller, data )
 		self:VomitNewProps(activator)
 		return true
 	end
+	number = tonumber(data)
+	if name == "SetSpeed" then
+		if number > 0 then
+			self.VomitSpeed = number
+		else
+			self.VomitSpeed = 1
+		end
+		return true
+	end
+	if name == "SetConstipateOdds" then
+		self.ConstipateOdds = number
+		return true
+	end
 
 	return false
 end
@@ -364,7 +387,9 @@ end
 if mapcontrol.IsInHub() then
 	hook.Add("PlayerInitialSpawn", "JazzInformPropsAvailable", function(ply)
 		local counts = snatch.GetPlayerPropCounts(ply, true)
-
-		UpdatePlayerPropMarker(ply, next(counts) ~= nil)
+		local vomiter = ents.FindByClass("jazz_hub_propvomiter")[1]
+		if IsValid(vomiter) then
+			UpdatePlayerPropMarker(ply, next(counts) ~= nil,vomiter:GetMarker())
+		end
 	end )
 end

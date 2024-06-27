@@ -67,8 +67,6 @@ if SERVER then
 	end
 
 else
-	include("jazz_localize.lua")
-
 	ENT.TankAmbientSound = "ambient/water/water_in_boat1.wav"
 	ENT.TankSplashSounds = {
 		"ambient/water/water_splash1.wav",
@@ -269,19 +267,29 @@ else
 		//self.AnimShardCount = math.Approach(self.AnimShardCount, self:GetCollectedShards(), 1)
 	end
 
+	local MSqueeze = Matrix()
 	function ENT:DrawRTScreen()
 		screen_rt:Render(function()
 			local c = HSVToColor(math.fmod(CurTime() * 40, 360), 0.8, 0.5)
 			local collected = self:GetCollectedShardCount()
 			render.Clear(c.r, c.g, c.b, 255)
 			cam.Start2D()
-				local ctext =  JazzLocalize("jazz.tank.shard"..(collected ~= 1 and "s" or ""),collected)
-				local ntext =  JazzLocalize("jazz.tank.need",mapgen.GetTotalRequiredShards())
+				local ctext =  jazzloc.Localize("jazz.tank.shard"..(collected ~= 1 and "s" or ""),collected)
+				local ntext =  jazzloc.Localize("jazz.tank.need",mapgen.GetTotalRequiredShards())
 				if newgame.GetGlobal("ended") then
-					ntext = JazzLocalize("jazz.tank.newgameplus")
+					ntext = jazzloc.Localize("jazz.tank.newgameplus")
 				end
+				surface.SetFont("JazzShardTankFont")
+				ctext = string.Trim(ctext)
+				local tw, th = surface.GetTextSize(ctext)
+				MSqueeze:Identity()
+				MSqueeze:Translate(Vector(sizeX/2, 0, 0))
+				MSqueeze:Scale(Vector(math.min(1, sizeX/tw), 1, 1))
+				MSqueeze:Translate(Vector(-sizeX/2, 0, 0))
+				cam.PushModelMatrix(MSqueeze, true)
+					draw.SimpleText(ctext, "JazzShardTankFont", sizeX / 2, sizeY / 2, color_white, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+				cam.PopModelMatrix()
 
-				draw.SimpleText(ctext, "JazzShardTankFont", sizeX / 2, sizeY / 2, color_white, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
 				draw.SimpleText(ntext, "JazzShardTankSubtextFont", sizeX / 2, sizeY / 1.5, color_white, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
 			cam.End2D()
 		end)

@@ -1,7 +1,7 @@
 ENT.Type = "anim"
 ENT.Base = "base_entity"
 
-ENT.PrintName		= "The Bus - Hub"
+ENT.PrintName		= "#jazz_bus_hub"
 ENT.Author			= ""
 ENT.Information	= ""
 ENT.Category		= ""
@@ -10,9 +10,6 @@ ENT.AdminSpawnable	= false
 
 ENT.Model			= Model( "models/matt/jazz_trolley.mdl" )
 
-if SERVER then
-util.AddNetworkString("mapmessagedeloreano")
-end
 
 function ENT:SetupDataTables()
 	self:NetworkVar("String",	0, "Destination")
@@ -33,16 +30,17 @@ function ENT:FromProgressMask(val)
 		bit.band(bit.rshift(val, 16), mask)
 end
 
+
+
 function ENT:SetMap(mapname, workshopID)
 	self:SetDestination(mapname)
 	print ("map setted!!")
 	print (mapname)
-	jazztardismap = mapname
-	print (jazztardismap)
-	net.Start("mapmessagedeloreano")
-	net.WriteString(tostring(mapname))
-	net.Broadcast()
-	print ("deloreano message broadcast")
+
+	if IsValid(jazztardis) then
+		local jazztardismap = mapname
+		jazztardis:SetData("jazz_destination", jazztardismap, true)
+	end
 	self:SetWorkshopID(workshopID)
 	self:SetMapProgress(self:ToProgressMask(mapname))
 end

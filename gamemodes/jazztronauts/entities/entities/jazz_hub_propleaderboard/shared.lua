@@ -9,9 +9,9 @@ ENT.RenderGroup = RENDERGROUP_OPAQUE
 ENT.Editable = true
 ENT.Model = "models/Combine_Helicopter/helicopter_bomb01.mdl"
 
-ENT.ScreenHeight = 640
-ENT.ScreenWidth = ENT.ScreenHeight * 1.30
-ENT.ScreenScale = .1
+ENT.ScreenHeight = 1500
+ENT.ScreenWidth = 1100
+ENT.ScreenScale = .12
 
 ENT.DefaultLeaderboard = 1
 
@@ -51,17 +51,15 @@ end
 
 if SERVER then return end
 
-include("jazz_localize.lua")
-
 surface.CreateFont( "JazzLeaderboardEntryFont", {
-	font	  = "Impact",
+	font	  = "KG Red Hands",
 	size	  = 60,
 	weight	= 700,
 	antialias = true
 })
 
 surface.CreateFont( "JazzLeaderboardTitleFont", {
-	font	  = "Impact",
+	font	  = "KG Red Hands",
 	size	  = 100,
 	weight	= 700,
 	antialias = true
@@ -83,7 +81,7 @@ function ENT:AddPlayerPanel(id, name, count)
 	nameLabel:Dock(FILL)
 
 	local countLabel = vgui.Create("DLabel", panel)
-	countLabel:SetText(JazzLocalize("jazz.leaderboard.props",count))
+	countLabel:SetText(jazzloc.Localize("jazz.leaderboard.props",count))
 	countLabel:SetFont("JazzLeaderboardEntryFont")
 	countLabel:SetContentAlignment(6)
 	countLabel:Dock(FILL)
@@ -105,14 +103,14 @@ function ENT:RebuildPanel()
 	end
 
 	local lst = vgui.Create("DListLayout")
-	lst:SetSize(self.ScreenWidth, 200)
+	lst:SetSize(self.ScreenWidth, self.ScreenHeight)
 	lst:SetPaintedManually(true)
 
 	local titleLabel = vgui.Create("DLabel", lst)
-	titleLabel:SetText(JazzLocalize(jazzboards.Boards[id].title))
+	titleLabel:SetText(jazzloc.Localize(jazzboards.Boards[id].title))
 	titleLabel:SetFont("JazzLeaderboardTitleFont")
 	titleLabel:SetContentAlignment(8)
-	titleLabel:DockMargin(0, 0, 0, 80.0)
+	titleLabel:DockMargin(0, 0, 0, 100)
 
 	for k, v in ipairs(jazzboards.Leaderboards[id]) do
 		lst:Add(self:AddPlayerPanel(v.steamid, v.name, v.count))

@@ -7,14 +7,16 @@ include("sh_chatmenu.lua")
 
 util.AddNetworkString("JazzRequestChatStart")
 
-function ENT:Initialize()
+local outputs =
+{
+	"OnPicked",
+	"OnNotPicked",
+}
 
-	-- Lookup corresponding npc model
-	local npcinfo = missions.GetNPCInfo(self.NPCID)
-	self:SetModel(npcinfo and npcinfo.model or self.Model)
-
+local updateCollision = function(self)
 	-- The cats don't actually have a physics model so just make a box around em
-	local mins, maxs = self:GetModelBounds()
+	local mins, maxs = self:AdjustBounds()
+
 	self:SetCollisionBounds(mins, maxs)
 	mins:Rotate(self:GetAngles())
 	maxs:Rotate(self:GetAngles())
@@ -22,6 +24,15 @@ function ENT:Initialize()
 
 	self:SetMoveType(MOVETYPE_NONE)
 	self:SetSolid(SOLID_BBOX)
+end
+
+function ENT:Initialize()
+
+	-- Lookup corresponding npc model
+	local npcinfo = missions.GetNPCInfo(self.NPCID)
+	self:SetModel(npcinfo and npcinfo.model or self.Model)
+
+	self:SetIdleAnim(self.IdleAnim)
 
 	self:SetUseType(SIMPLE_USE)
 
@@ -30,26 +41,47 @@ function ENT:Initialize()
 		phys:EnableMotion(false)
 	end
 
-	self:SetIdleAnim(self.IdleAnim)
 	self:SetNPCID(self.NPCID)
 
 	self:SetupChatTables()
 end
 
 function ENT:KeyValue( key, value )
-	if key == "idleanim" then
+
+	if table.HasValue(outputs, key) then
+		self:StoreOutput(key, value)
+	end
+
+	if key == "DefaultAnim" or key == "idleanim" then
 		self.IdleAnim = value
 	end
 
 	if key == "npcid" then
 		self.NPCID = tonumber(value)
 	end
+	
+	if key == "skin" then
+		self:SetSkin(tonumber(value))
+	end
+end
+
+
+function ENT:AcceptInput( name, activator, caller, data )
+
+	if name == "Skin" then self:SetSkin(tonumber(data)) return true end
+
+	if name == "SetIdle" then self:SetIdleAnim(tostring(data)) return true end
+
+	return false
 end
 
 function ENT:SetIdleAnim(anim)
 	self.IdleAnim = anim
 
 	self:ResetSequence(self:LookupSequence(self.IdleAnim))
+
+	updateCollision(self)
+
 	self:SetPlaybackRate(1.0)
 end
 
@@ -96,9 +128,16 @@ hook.Add("InitPostEntity", "JazzPlaceSingleCat", function()
 	for id, npcs in pairs(NPCS) do
 		local survivor = table.Random(npcs)
 
+		if IsValid(survivor) then
+			survivor:TriggerOutput("OnPicked", survivor)
+		end
+
 		-- Kill the rest
 		for _, v in pairs(npcs) do
-			if v != survivor then v:Remove() end
+			if v != survivor then
+				v:TriggerOutput("OnNotPicked", v)
+				v:Remove()
+			end
 		end
 	end
 end )

@@ -41,6 +41,14 @@ ENT.BrakeSounds =
 	"jazztronauts/trolley/brake_2.wav",
 }
 
+local shockingisntit = {
+	"npc/roller/mine/rmine_explode_shock1.wav",
+	"npc/roller/mine/rmine_shockvehicle1.wav",
+	"npc/roller/mine/rmine_shockvehicle2.wav",
+	"npc/scanner/scanner_pain1.wav",
+	"npc/scanner/scanner_pain2.wav"
+}
+
 ENT.TravelTime = 1.5
 
 util.AddNetworkString("jazz_bus_explore_voideffects")
@@ -54,6 +62,22 @@ function ENT:Initialize()
 	self:SetTrigger(true) -- So we get 'touch' callbacks that fuck shit up
 	self:SetNoDraw(true)
 
+	hook.Add( "CanTool", "NoBusRemoval", function( ply, tr, toolname, tool )
+		if toolname ~= "remover" then return end
+		if !IsValid( tr.Entity ) then return end
+		if tr.Entity:GetClass() ~= "jazz_bus_explore" then return end
+
+		ply:Freeze(true)
+		ply:DropWeapon()
+		ply:EmitSound(table.Random(shockingisntit), 50)
+		util.ScreenShake(ply:GetPos(), 20, 5, 2, 50)
+
+		timer.Create( "BusRemovalUnfreeze", 1.5, 1, function()
+			if !IsValid( ply ) then return end
+			ply:Freeze(false)
+		end )
+		return false
+	end )
 
 	-- Setup seat offsets
 	for i=1, 8 do
@@ -90,6 +114,9 @@ function ENT:Initialize()
 	end )
 
 	if SERVER then
+		
+		self.RadioEnt:DeleteOnRemove(self.Radio)
+
 		hook.Add("PlayerEnteredVehicle", self, function(self, ply, veh, role)
 			self:CheckLaunch()
 		end)
@@ -161,7 +188,7 @@ function ENT:Arrive()
 			v:SetNoDraw(false)
 		end
 	end
-	
+
 	self.BrakeSound:Play()
 
 	self.StartTime = CurTime()
@@ -172,24 +199,47 @@ function ENT:Arrive()
 		local MoveDistance = math.Clamp(self.ExitPortal:DistanceToVoid(self:GetFront(), true), 50, self.HalfLength*2)
 		self.GoalPos = self:GetPos() + self:GetAngles():Right() * MoveDistance
 	end
-	
+
 end
 
 function ENT:Leave()
 	if self.MoveState == MOVE_LEAVING then return end
 
 	self:EmitSound("jazz_bus_accelerate2")
-print ("WERE LEAVING BOYS")
-timer.Simple(30, function()
+	print ("WERE LEAVING BOYS")
+timer.Simple(30, function()  -- falback for if the bus despawns due to driving out of the map's bounds
 	mapcontrol.Launch(mapcontrol.GetHubMap())
 end)
 	self.StartTime = CurTime()
 	self.StartPos = self:GetPos()
-	self.GoalPos = self.GoalPos + self:GetAngles():Right() * 2000
+	local BusAngle = self:GetAngles():Right()
+	self.GoalPos = self.GoalPos + BusAngle * 2000
 
 	self.MoveState = MOVE_LEAVING
 	self:GetPhysicsObject():EnableMotion(true)
 	self:GetPhysicsObject():Wake()
+
+	hook.Add( "PlayerLeaveVehicle", "VoidEjection", function( ply )
+		timer.Create( "VoidEjectTimer", 0, 1, function() -- timer prevents crash
+			local repcount = 0
+			local BehindBus = self:GetPos() + Vector(0, 0, 50) + BusAngle * -150
+			repeat
+				repcount = repcount + 1
+				BehindBus = BehindBus + BusAngle * -100
+				ply:SetPos(BehindBus)
+			until ( ply:IsInWorld( BehindBus ) or repcount > 20 )
+
+			local EjectSpeed = Vector(0, 0, 0) + BusAngle * -2000
+			ply:SetVelocity(EjectSpeed)
+
+			ply:Kill()
+			ply:Spectate(OBS_MODE_DEATHCAM)
+			hook.Add( "PlayerSpawn", "VoidEjectedRespawn", function()
+				self:SitPlayer(ply)
+			end )
+		end )
+	end )
+
 end
 
 function ENT:AttachRadio(pos, ang)
@@ -218,6 +268,11 @@ function ENT:AttachRadio(pos, ang)
 
 	-- Attach a looping audiozone
 	self.RadioMusic = CreateSound(ent, self.RadioMusicName)
+	hook.Add("EntityRemoved", "JazzBusRadioCheck", function(removed)
+		if removed ~= radio_ent then return end
+		self.RadioMusic:Stop()
+		ent:Remove()
+	end)
 end
 
 function ENT:AttachSeat(pos, ang)
@@ -295,7 +350,7 @@ function ENT:Touch(other)
 	local d = DamageInfo()
 	d:SetDamage((velocity - other:GetVelocity()):Length() )
 	d:SetAttacker(self)
-	d:SetDamageType(DMG_CRUSH)
+	d:SetDamageType(bit.bor(DMG_VEHICLE,DMG_CRUSH))
 	d:SetDamageForce(velocity * 10000) -- Just fuck them up
 
 	other:TakeDamageInfo( d )
@@ -407,17 +462,17 @@ function ENT:Think()
 
 		-- Stop moving the bus entirely when the rear of the bus gets inside the portal
 		if (leaving or leavingPortal) and self.ExitPortal:DistanceToVoid(self:GetRear()) > 800 then
-			self.MoveState = MOVE_STATIONARY_DEBUG
-			self.GoalPos = self:GetPos()
+			self.MoveState = MOVE_STATIONARY_DEBUG  -- actually have the bus keep moving inside the jazz dimension
+			self.GoalPos = self:GetPos()			-- it's dangerous because it can despawn but worth it
 		end
 	end
 
 
 	-- Changelevel at the end
 	if self.ChangelevelTime and CurTime() > self.ChangelevelTime then
-		if self:GetNumOccupants() >= player.GetCount() then
+		--if self:GetNumOccupants() >= player.GetCount() then
 			mapcontrol.Launch(mapcontrol.GetHubMap())
-		end
+		--end
 	end
 end
 

@@ -131,8 +131,6 @@ if SERVER then
 		else
 			yoink:StartWorld(self:GetPos(), self:GetOwner(), self:GetBrushID())
 			hook.Run("CollectBrush", self.BrushInfo, self.PlayerList)
-			print ("snatching")
-			
 		end
 	end
 
@@ -228,7 +226,7 @@ if CLIENT then
 			render.SetLightmapTexture(lightmapTex)
 			render.SetLightingOrigin( center)
 			render.SetMaterial(material)
-			
+
 			displacementMesh:Draw()
 
 			local col = Color(255,100,255, 40)
@@ -236,7 +234,7 @@ if CLIENT then
 			local indices = self.indices
 			local positions = self.positions
 			for i=1, #indices, 3 do
-		
+
 				local v0 = positions[ indices[i] ] - center
 				local v1 = positions[ indices[i+1] ] - center
 				local v2 = positions[ indices[i+2] ] - center
@@ -244,7 +242,7 @@ if CLIENT then
 				render.DrawLine( v0, v1, col, false )
 				render.DrawLine( v1, v2, col, false )
 				render.DrawLine( v2, v0, col, false )
-		
+
 			end
 		end
 
