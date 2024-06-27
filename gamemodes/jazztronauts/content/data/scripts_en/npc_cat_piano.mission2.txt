@@ -1,7 +1,7 @@
 accept:
 	Ah.%% Hi.%%%
 	
-	>The Pianist is steadfastly not making eye contact and looks rather
+	> The Pianist is steadfastly not making eye contact and looks rather
 	sulky. 
 	&a1
 	
@@ -29,7 +29,7 @@ a4:
 	
 a5:
 	Which is where you come in,% *player*,% my dear pal. 
-	I happen to know that our mutual friend The Singer has a 
+	I happen to know that our mutual friend the Singer has a 
 	weakness for fast food. 
 	So,%% you're gonna help me put on a feast. 
 	&a6
@@ -66,42 +66,21 @@ i3:
 	&exit
 
 turnin:
+	spawnnarrator()
 	I smell dumplings and regret,% which means you've delivered.
 	&t1
 	
 t1:
-	>The Pianist jams a wad of cash into your hand. *finish 2*
+	*setspeaker narrator*
+	> The Pianist jams a wad of cash into your hand. *finish 2*
 	15,000, to be exact.%% A little excessive for a delivery tip,%
 	but you'll fuckin' take it.
 	&t2
 	
 t2:
-	Hey.% Thanks.%% The Bar's a nicer place when The Singer is smiling.%%
+	*setspeaker npc_cat_piano*
+	Hey.% Thanks.%% The Bar's a nicer place when the Singer is smiling.%%
 	I gotta go get things ready,% but uh.%%% 
 	If you're around later,% come say hi.%%% 
 	I can set a fifth place at the table.
 	&exit
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	

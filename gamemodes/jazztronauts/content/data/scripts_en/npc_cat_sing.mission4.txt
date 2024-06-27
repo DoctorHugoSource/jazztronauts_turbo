@@ -6,25 +6,25 @@ accept:
 	&a1
 	
 a1:
-	> They thank you again for the help with the pots earlier and inform you
+	> They thank you again for the help with the pots earlier, and inform you
 	that the early experiments are promising. 
 	&a1b
 	
 a1b:
 	> Thanks to some vigorous application of fertilizer they, borrowed, 
-	from The Cellist's supplies, the first shoots have already appeared!
+	from the Cellist's supplies, the first shoots have already appeared!
 	&a2
 	
 a2:
 	> They also apologize for your having to witness the tiff between the 
-	Pianist and The Cellist. The squabbles have been less frequent since you 
+	Pianist and Cellist. The squabbles have been less frequent since you 
 	arrived, and involved less wanton destruction, but they 
 	know how sound can carry through the bar.
 	&a3
 	
 a3:
-	> The Singer stares over the water, then shakes their head and passes you 
-	your mission briefing\: 
+	> The Singer stares over the water, then shakes their head and passes
+	you your mission briefing\: 
 	&a3b
 	
 a3b:
@@ -35,9 +35,9 @@ a3b:
 	
 a4:
 	> They further elaborate that while there's a fairly robust collection of 
-	entities in the Mewseum, they found a reference to an NPC named Alyx that 
-	appears to be relatively uncommon and thus needs to be preserved in a hurry. 
-	You'll be paid a premium for tracking one down. *start 4*
+	entities in the Mewseum, they found a reference to an NPC named Alyx 
+	that appears to be relatively uncommon and thus needs to be preserved 
+	in a hurry. You'll be paid a premium for tracking one down. *start 4*
 	&exit
 	
 	
@@ -64,7 +64,7 @@ i1:
 	&exit
 
 turnin:
-	> You're a little unsure how to best wake The Singer, so you settle for 
+	> You're a little unsure how to best wake the Singer, so you settle for 
 	hunkering down and lightly poking their paw. 
 	&turnin1
 	
@@ -84,7 +84,7 @@ t1:
 	&t2
 	
 t2:
-	> They thank you for your work and their tablet dings. 
+	> They thank you for your work, and their tablet dings. 
 	&t2b
 	
 t2b:
@@ -97,14 +97,3 @@ t3:
 	> They encourage you to just call their name the next 
 	time you need to wake them up.
 	&exit
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
