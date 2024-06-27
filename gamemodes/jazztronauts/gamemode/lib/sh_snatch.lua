@@ -116,6 +116,8 @@ if SERVER then
 			local exist = findPropProxy( v.id )
 			if not exist then
 
+				if not v.model then print("Unable to create proxy for null model : " .. tostring(v.id)) continue end
+
 				local ent = ents.Create("jazz_static_proxy")
 				if not IsValid( ent ) then print("!!!Failed to create proxy") continue end
 
@@ -165,7 +167,7 @@ if SERVER then
 
 		local mode 		= args[1] and tonumber(args[1])
 		if mode <= 0 then mode = nil end
-		
+
 		local reverse 	= tobool(args[2])
 		local rate 		= args[3] and tonumber(args[3])
 		if rate <= 0 then rate = math.huge end
@@ -358,7 +360,7 @@ function meta:RunDisplacement(disp_id)
 
 	if self.mode then
 		local material = Material( disp.face.texinfo.texdata.material )
-		
+
 		local current_disp_mesh, current_disp_center, current_disp_material = map:CreateDisplacementMesh( disp_id, 0.5, material )
 
 		local entity = ManagedCSEnt( "dispproxy_" .. disp_id, "models/hunter/blocks/cube025x025x025.mdl", false )
@@ -386,7 +388,7 @@ function meta:RunDisplacement(disp_id)
 				render.SetLightmapTexture(lightmapTex)
 				render.SetLightingOrigin( current_disp_center)
 				render.SetMaterial(current_disp_material)
-				
+
 				current_disp_mesh:Draw()
 			cam.PopModelMatrix()
 
@@ -530,7 +532,7 @@ function meta:StartProp( prop, owner, kill, delay )
 end
 
 function meta:RunProp( prop )
-
+	
 	if SERVER then return end
 
 	self.real = prop
@@ -661,6 +663,7 @@ function meta:RunStaticProp( propid, propproxy )
 		if IsValid(propproxy) then
 			propproxy:SetPos( pdata.origin )
 			propproxy:SetAngles( pdata.angles )
+			propproxy:SetSkin( pdata.skin )
 			me.vel = Vector()
 			me.avel = Vector()
 			me:RunProp(propproxy)
@@ -796,6 +799,10 @@ if SERVER then
 				ent:TriggerOutput("OnFullyOpen", owner)
 			end
 
+			-- keep these disabled because it adds a delay when snatching any physics prop
+			-- ent:Fire("Unlock", nil, 0, owner, owner)
+			-- ent:Fire("Open", nil, 0, owner, owner)
+			-- ent:Fire("Use", nil, 0, owner, owner)
 
 		end
 
