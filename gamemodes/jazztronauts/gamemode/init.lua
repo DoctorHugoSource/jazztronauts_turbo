@@ -26,10 +26,13 @@ AddCSLuaFile( "playerwait/cl_init.lua")
 AddCSLuaFile( "newgame/cl_init.lua")
 
 AddCSLuaFile( "cl_hud.lua" )
+AddCSLuaFile("cl_texturelocs.lua")
 
 util.AddNetworkString("shard_notify")
 
 local LOADING_SCREEN_URL = "host.foohy.net/public/Documents/Jazz/"
+
+CreateConVar("crazyfix","0",bit.bor(FCVAR_PROTECTED,FCVAR_UNREGISTERED,FCVAR_UNLOGGED))
 
 concommand.Add( "jazz_test_lzma", function()
 
@@ -164,6 +167,11 @@ function GM:JazzMapStarted()
 	if game.GetMap() == mapcontrol.GetIntroMap() then
 		--newgame.SetGlobal("finished_intro", true)
 	end
+
+	crazywarn = crazywarn or GetConVar("sv_crazyphysics_warning"):GetString()
+	crazydefuse = crazydefuse or GetConVar("sv_crazyphysics_defuse"):GetString()
+	crazyremove = crazyremove or GetConVar("sv_crazyphysics_remove"):GetString()
+
 end
 
 function GM:GenerateJazzEntities(noshards)
@@ -232,6 +240,15 @@ end
 function GM:ShutDown()
 	if not mapcontrol.IsInHub() then
 		progress.UpdateMapSession(game.GetMap())
+	end
+
+	--revert crazyphysics settings
+	local crazyfix = GetConVar("crazyfix")
+	if crazyfix:GetBool() == true then
+		if crazywarn then RunConsoleCommand("sv_crazyphysics_warning",crazywarn) end
+		if crazydefuse then RunConsoleCommand("sv_crazyphysics_defuse",crazydefuse) end
+		if crazyremove then RunConsoleCommand("sv_crazyphysics_remove",crazyremove) end
+		crazyfix:SetBool(false)
 	end
 
 	if not mapcontrol.IsLaunching() then
@@ -338,7 +355,7 @@ function GM:CollectBrush(brush, players)
 	local size = brush.max - brush.min
 	local length = size.x + size.y + size.z
 
-	local worth = math.pow(length, 1.3) / 15.0
+	local worth = math.pow(length, 1.1) / 15.0
 
 	-- Collect the prop to the poop chute
 	if worth and worth > 0 then --TODO: Check if worth > 1 not 0
@@ -431,7 +448,7 @@ function GM:PlayerInitialSpawn( ply )
 	-- Hey. Don't play this in singleplayer
 	if game.SinglePlayer() then
 		timer.Simple(5, function()
-			print ("You are now playing in Singleplayer mode. No Shards or equipment, only map exploration. For the full Jazztronauts gameplay, play in multiplayer!")
+			dialog.Dispatch("no_singleplayer_allowed.begin", ply)
 		end )
 	end
 end
@@ -450,8 +467,6 @@ function GM:PlayerSpawn( ply )
 
 	player_manager.OnPlayerSpawn( ply )
 	player_manager.RunClass( ply, "Spawn" )
-
-	PrintMapHistory(ply)
 
 	hook.Call( "PlayerLoadout", GAMEMODE, ply )
 	hook.Call( "PlayerSetModel", GAMEMODE, ply )
@@ -499,3 +514,20 @@ concommand.Add("jazz_reset_progress", function(ply, cmd, args)
 	print("Dump'd.")
 
 end, nil, "Reset all jazztronauts progress entirely. This wipes all player progress, map history, purchases, unlocks, and previous game data.")
+
+--keep track of changes to crazyphysics
+cvars.AddChangeCallback("sv_crazyphysics_warning",function(convar,oldval,newval)
+	if not GetConVar("crazyfix"):GetBool() then
+		crazywarn = newval
+	end
+end)
+cvars.AddChangeCallback("sv_crazyphysics_defuse",function(convar,oldval,newval)
+	if not GetConVar("crazyfix"):GetBool() then
+		crazydefuse = newval
+	end
+end)
+cvars.AddChangeCallback("sv_crazyphysics_remove",function(convar,oldval,newval)
+	if not GetConVar("crazyfix"):GetBool() then
+		crazyremove = newval
+	end
+end)
