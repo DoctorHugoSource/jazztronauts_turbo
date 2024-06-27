@@ -5,17 +5,18 @@ if SERVER then
 end
 
 SWEP.Base					= "weapon_basehold"
-SWEP.PrintName				= JazzLocalize("jazz.weapon.snatcher")
+SWEP.PrintName				= jazzloc.Localize("jazz.weapon.snatcher")
 SWEP.Slot					= 0
 SWEP.Category				= "#jazz.weapon.category"
-SWEP.WepSelectIcon			= Material( "weapons/weapon_propsnatcher.png" )
-SWEP.Weight				= 22
+SWEP.Purpose				= "#jazz.weapon.snatcher.desc"
+SWEP.WepSelectIcon			= Material( "entities/weapon_propsnatcher.png" )
+SWEP.AutoSwitchFrom			= false
 
 SWEP.ViewModel				= "models/weapons/c_stunstick.mdl"
 SWEP.WorldModel				= "models/weapons/w_stunbaton.mdl"
 SWEP.HoldType				= "melee"
 
-SWEP.Primary.Delay			= 0.001
+SWEP.Primary.Delay			= 0.1
 SWEP.Primary.ClipSize		= -1
 SWEP.Primary.DefaultClip	= -1
 SWEP.Primary.Ammo			= "none"
@@ -24,12 +25,12 @@ SWEP.Primary.Automatic		= true
 
 SWEP.Secondary.ClipSize		= -1
 SWEP.Secondary.DefaultClip	= -1
-SWEP.Secondary.Ammo		= "none"
+SWEP.Secondary.Ammo			= "none"
 
 -- General settings
 SWEP.ReticleCircleMaterial	= Material("ui/jazztronauts/circle")
 local LongRangeDefault		= 300
-local ShortRangeDefault	= 175
+local ShortRangeDefault		= 175
 SWEP.MaxRange				= LongRangeDefault
 SWEP.CloseRange				= ShortRangeDefault
 
@@ -45,7 +46,7 @@ SWEP.Spawnable				= true
 SWEP.RequestInfo			= {}
 SWEP.KillsPeople			= true
 
-SWEP.StartShootTime		= 0
+SWEP.StartShootTime			= 0
 SWEP.LastCursorPos			= Vector()
 
 SWEP.SnatchSounds = {
@@ -59,63 +60,63 @@ SWEP.MissSounds = {
 }
 
 local snatch_cone = jstore.RegisterSeries("snatch_cone", 20000, 10, {
-	name = JazzLocalize("jazz.weapon.snatcher.upgrade.cone"),
-	desc = JazzLocalize("jazz.weapon.snatcher.upgrade.cone.desc"),
+	name = jazzloc.Localize("jazz.weapon.snatcher.upgrade.cone"),
+	desc = jazzloc.Localize("jazz.weapon.snatcher.upgrade.cone.desc"),
 	type = "upgrade",
-	cat = JazzLocalize("jazz.weapon.snatcher"),
+	cat = jazzloc.Localize("jazz.weapon.snatcher"),
 	priceMultiplier = 1.5,
 })
 local snatch_range = jstore.RegisterSeries("snatch_range", 10000, 15, {
-	name = JazzLocalize("jazz.weapon.snatcher.upgrade.range"),
-	desc = JazzLocalize("jazz.weapon.snatcher.upgrade.range.desc"),
+	name = jazzloc.Localize("jazz.weapon.snatcher.upgrade.range"),
+	desc = jazzloc.Localize("jazz.weapon.snatcher.upgrade.range.desc"),
 	type = "upgrade",
-	cat = JazzLocalize("jazz.weapon.snatcher"),
+	cat = jazzloc.Localize("jazz.weapon.snatcher"),
 	priceMultiplier = 1.5,
 })
 local snatch2 = jstore.Register("snatch2", 10000, {
-	name = JazzLocalize("jazz.weapon.snatcher.upgrade.auto"),
-	cat = JazzLocalize("jazz.weapon.snatcher"),
-	desc = JazzLocalize("jazz.weapon.snatcher.upgrade.auto.desc"),
+	name = jazzloc.Localize("jazz.weapon.snatcher.upgrade.auto"),
+	cat = jazzloc.Localize("jazz.weapon.snatcher"),
+	desc = jazzloc.Localize("jazz.weapon.snatcher.upgrade.auto.desc"),
 	type = "upgrade"
 })
 
 local snatch_world = jstore.Register("snatch_world", 10000, {
-	name = JazzLocalize("jazz.weapon.snatcher.upgrade.world"),
-	cat = JazzLocalize("jazz.weapon.snatcher"),
-	desc = JazzLocalize("jazz.weapon.snatcher.upgrade.world.desc"),
+	name = jazzloc.Localize("jazz.weapon.snatcher.upgrade.world"),
+	cat = jazzloc.Localize("jazz.weapon.snatcher"),
+	desc = jazzloc.Localize("jazz.weapon.snatcher.upgrade.world.desc"),
 	type = "upgrade"
 })
 local snatch_multi = jstore.Register("snatch_multi", 50000, {
-	name = JazzLocalize("jazz.weapon.snatcher.upgrade.multi"),
-	cat = JazzLocalize("jazz.weapon.snatcher"),
-	desc = JazzLocalize("jazz.weapon.snatcher.upgrade.multi.desc"),
+	name = jazzloc.Localize("jazz.weapon.snatcher.upgrade.multi"),
+	cat = jazzloc.Localize("jazz.weapon.snatcher"),
+	desc = jazzloc.Localize("jazz.weapon.snatcher.upgrade.multi.desc"),
 	requires = snatch_world,
 	type = "upgrade"
 })
-local snatch_world_speed = jstore.RegisterSeries("snatch_world_speed", 10000, 10, { -- 5000
-	name = JazzLocalize("jazz.weapon.snatcher.upgrade.wspeed"),
-	desc = JazzLocalize("jazz.weapon.snatcher.upgrade.wspeed.desc"),
+local snatch_world_speed = jstore.RegisterSeries("snatch_world_speed", 10000, 10, {  -- higher starting price
+	name = jazzloc.Localize("jazz.weapon.snatcher.upgrade.wspeed"),
+	desc = jazzloc.Localize("jazz.weapon.snatcher.upgrade.wspeed.desc"),
 	requires = snatch_world,
 	type = "upgrade",
-	cat = JazzLocalize("jazz.weapon.snatcher"),
-	priceMultiplier = 2, -- 2
+	cat = jazzloc.Localize("jazz.weapon.snatcher"),
+	priceMultiplier = 2,  -- lower multiplier to make it reasonable to actually reach the max upgrade (atleast with newgame+)
 })
 
-local snatch_instant = jstore.Register("snatch_instant", 10000000, {
+local snatch_instant = jstore.Register("snatch_instant", 10000000, {  -- for super lategame
 	name = JazzLocalize("Instant world stealing"),
 	cat = JazzLocalize("jazz.weapon.snatcher"),
 	desc = JazzLocalize("Steal brushes instantly"),
 	requires = snatch_world,
 	type = "upgrade"
 })
-local snatch_infiniterange = jstore.Register("snatch_infiniterange", 10000000, {
+local snatch_infiniterange = jstore.Register("snatch_infiniterange", 10000000, {  -- for super lategame
 	name = JazzLocalize("Infinite snatch range"),
 	cat = JazzLocalize("jazz.weapon.snatcher"),
 	desc = JazzLocalize("Give your snatcher infinite range"),
 	requires = snatch_instant,
 	type = "upgrade"
 })
-local snatch_sonicsteal = jstore.Register("snatch_sonicsteal", 75000, {
+local snatch_sonicsteal = jstore.Register("snatch_sonicsteal", 75000, {  -- super fast stealing for fun
 	name = JazzLocalize("Supersonic Aim"),
 	cat = JazzLocalize("jazz.weapon.snatcher"),
 	desc = JazzLocalize("Increases your propsnatcher's auto-firerate to ridiculous levels."),
@@ -124,7 +125,7 @@ local snatch_sonicsteal = jstore.Register("snatch_sonicsteal", 75000, {
 })
 
 
-CreateConVar("jazz_debug_snatch_allups", "0", { FCVAR_REPLICATED, FCVAR_NOTIFY }, JazzLocalize("Temporarily enable all upgrades for snatcher"))
+CreateConVar("jazz_debug_snatch_allups", "0", { FCVAR_REPLICATED, FCVAR_NOTIFY }, jazzloc.Localize("Temporarily enable all upgrades for snatcher"))
 
 function SWEP:Initialize()
 	self.BaseClass.Initialize( self )
@@ -154,11 +155,15 @@ function SWEP:SetUpgrades(overpowered)
 
 	overpowered = overpowered or self.Overpowered or cvars.Bool("jazz_debug_snatch_allups", false)
 
+	local overpoweredrange = unlocks.IsUnlocked("store", owner, snatch_infiniterange)
+	local overpoweredbrush = unlocks.IsUnlocked("store", owner, snatch_instant)
+
 	-- Tier I - Aim in cone upgrade
 	self.AutoAimCone = AimConeDefault + jstore.GetSeries(owner, snatch_cone) * 3.3
 
 	-- Steal range
-	local rangeLevel = unlocks.IsUnlocked("store", owner, snatch_infiniterange) and 10000 or jstore.GetSeries(owner, snatch_range)
+
+	local rangeLevel = (overpoweredupgrade and 10000) or (overpowered and 10) or jstore.GetSeries(owner, snatch_range)
 	self.MaxRange	= LongRangeDefault + rangeLevel * 150
 	self.CloseRange = ShortRangeDefault + rangeLevel * 25
 
@@ -169,7 +174,7 @@ function SWEP:SetUpgrades(overpowered)
 	self.CanStealWorld = unlocks.IsUnlocked("store", owner, snatch_world) or overpowered
 
 	-- How fast they can steal the world
-	self.WorldStealSpeed = unlocks.IsUnlocked("store", owner, snatch_instant) and math.huge or (jstore.GetSeries(owner, snatch_world_speed) + 1)
+	self.WorldStealSpeed = (overpoweredbrush and math.huge) or (overpowered and math.huge) (jstore.GetSeries(owner, snatch_world_speed) + 1)
 
 	-- Allow multi-tasking?
 	self.CanMultitask = unlocks.IsUnlocked("store", owner, snatch_multi) or overpowered
@@ -846,91 +851,3 @@ function SWEP:ShootEffects()
 	owner:SetAnimation( PLAYER_ATTACK1 )
 
 end
-
--- SWEP.TriggerRadius = 16
--- SWEP.BrushMinDestroyRadius = 64
--- SWEP.BrushMaxDestroyRadius = 300
--- SWEP.BrushDestroyInterval = 0.1
--- SWEP.SnatchMode = 2
-
-
--- function SWEP:GetNearbyBrushes()
--- 	local brushes = bsp2.GetCurrent().brushes
--- 	if !brushes then print("SHARDS DIDN'T GRAB BRUSHES - MAP STILL LOADING") return end
-
-
-
--- 	self.NearBrushes = {}
--- 	for k, v in pairs(brushes) do
-
--- 		-- Optionally hard limit which brushes we touch
--- 		if limitbrushes and limitbrushes[k] == nil then continue end
-
--- 		-- Check if our danger sphere encompasses that brush
--- 		if v:IntersectsSphere(self:GetPos(), self.BrushMaxDestroyRadius) and not snatch.removed_brushes[v] then
--- 			v:CreateWindings()
-
--- 			-- Skip if not solid
--- 			if bit.band(v.contents, CONTENTS_SOLID) != CONTENTS_SOLID then continue end
-
--- 			local info = {
--- 				id = k,
--- 				dist = self:GetPos():Distance((v.min + v.max) / 2)
--- 			}
-
--- 			table.insert(self.NearBrushes, info)
--- 		end
--- 	end
-
--- 	table.SortByMember(self.NearBrushes, "dist", true)
-
--- 	print("Found ", #self.NearBrushes .. " nearby brushes")
--- end
-
--- function SWEP:Reload(maxdist)
--- 	print("Begin destruction, ", maxdist)
--- 	if not self.NearBrushes then
--- 		self:GetNearbyBrushes()
--- 		return
--- 	end
-
--- 	local pos = self:GetPos()
--- 	local actual = 0
--- 	for k, v in ipairs(self.NearBrushes) do
--- 		-- Don't continue if we hit the specified max range
--- 		if v.dist > maxdist then break end
-
--- 		-- Ignore meshes that have already been taken
--- 		if snatch.removed_brushes[v.id] then continue end
-
--- 		-- Random delay
--- 		timer.Simple(actual * self.BrushDestroyInterval, function()
--- 			local yoink = snatch.New()
--- 			yoink:SetMode(self.SnatchMode)
--- 			yoink:StartWorld( pos, ply, v.id )
--- 		end )
-
--- 		actual = actual + 1
--- 	end
-
--- 	print("Actually yoinked: " .. actual .. " (" .. (actual * self.BrushDestroyInterval) .. " seconds)")
-
--- 	-- Call when finished stealing everything
--- 	timer.Simple(actual * self.BrushDestroyInterval, function()
--- 		self:SetIsFinished(true)
--- 		self:OnFinished()
--- 	end )
-
--- 	self.NearBrushes = nil
--- end
-
-
--- if SERVER then
--- 	-- Vary the range as they collect shards - bigger by the end
--- 	local numleft, total = mapgen.GetShardCount()
--- 	local maxdist = Lerp(numleft * 1.0 / total, SWEP.BrushMaxDestroyRadius, SWEP.BrushMinDestroyRadius)
-
-
-
--- 	SWEP:Reload(maxdist)
--- end

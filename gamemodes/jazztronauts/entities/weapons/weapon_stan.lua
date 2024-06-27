@@ -3,11 +3,12 @@ if SERVER then
 end
 
 SWEP.Base					= "weapon_basehold"
-SWEP.PrintName				= JazzLocalize("jazz.weapon.stan")
-SWEP.Slot					= 1
+SWEP.PrintName				= jazzloc.Localize("jazz.weapon.stan")
+SWEP.Slot					= 3
 SWEP.Category				= "#jazz.weapon.category"
 SWEP.Purpose				= "#jazz.weapon.stan.desc"
-SWEP.WepSelectIcon			= Material( "weapons/weapon_stan.png" )
+SWEP.WepSelectIcon			= Material( "entities/weapon_stan.png" )
+SWEP.AutoSwitchFrom			= false
 
 SWEP.ViewModel				= "models/weapons/c_stan.mdl"
 SWEP.WorldModel				= ""
@@ -18,7 +19,6 @@ SWEP.HoldType				= "magic"
 
 util.PrecacheModel( SWEP.ViewModel )
 util.PrecacheModel( SWEP.WorldModel )
-
 
 SWEP.Primary.Delay			= 0.1
 SWEP.Primary.ClipSize		= -1
@@ -48,17 +48,17 @@ SWEP.TopSpeed				= 2000
 local storeStan = jstore.Register(SWEP, 4000, { type = "tool" })
 
 -- Create 3 items to be purchased one after the other that control range
-local storeRange = jstore.RegisterSeries("stan_range", 2000, 20, {
-	name = JazzLocalize("jazz.weapon.stan.upgrade.range"),
+local storeRange = jstore.RegisterSeries("stan_range", 2000, 10, {
+	name = jazzloc.Localize("jazz.weapon.stan.upgrade.range"),
 	requires = storeStan,
-	desc = JazzLocalize("jazz.weapon.stan.upgrade.range.desc"),
+	desc = jazzloc.Localize("jazz.weapon.stan.upgrade.range.desc"),
 	type = "upgrade",
 	priceMultiplier = 2,
 })
-local storeSpeed = jstore.RegisterSeries("stan_speed", 1000, 20, {
-	name = JazzLocalize("jazz.weapon.stan.upgrade.speed"),
+local storeSpeed = jstore.RegisterSeries("stan_speed", 1000, 10, {
+	name = jazzloc.Localize("jazz.weapon.stan.upgrade.speed"),
 	requires = storeStan,
-	desc = JazzLocalize("jazz.weapon.stan.upgrade.speed.desc"),
+	desc = jazzloc.Localize("jazz.weapon.stan.upgrade.speed.desc"),
 	type = "upgrade",
 	priceMultiplier = 2,
 })
@@ -566,7 +566,7 @@ function SWEP:Think()
 	local topspeed = self.TopSpeed
 
 	if not self:IsPrimaryAttacking() then
-		speedrate = 3250
+		speedrate = 750  -- 3250
 	end
 
 	if dt <= 0 then return end
