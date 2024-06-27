@@ -51,8 +51,10 @@ local function getWorkshopFacts(wsid, addFact)
 		addFact("ws_filesize", "jazz.fact.filesize,"..string.NiceSize(tonumber(info.file_size) or 0))
 		addFact("ws_favorites", "jazz.fact.favs,"..tostring(info.favorited))
 		addFact("ws_subscriptions", "jazz.fact.subs,"..tostring(info.subscriptions))
-		addFact("ws_upload_date", "jazz.fact.uploaded,"..tostring(os.date("%H:%M:%S - %d/%m/%Y", tonumber(info.time_created) or 0)))
-		addFact("ws_update_date", "jazz.fact.modified,"..tostring(os.date("%H:%M:%S - %d/%m/%Y", tonumber(info.time_updated) or 0)))
+		--[[The info going out for these dates/times is 1 Year (full), 2 Month (number), 3 Day, 4 Hour, 5 Minute, 6 Second,
+		7 Year (two-digit), 8 Month (Name), 9 Month (Abbreviated), 10 Hour (12hr), 11 AM/PM]]
+		addFact("ws_upload_date", "jazz.fact.uploaded,"..tostring(os.date("%Y,%m,%d,%H,%M,%S,%y,%B,%b,%I,%p", tonumber(info.time_created) or 0)))
+		addFact("ws_update_date", "jazz.fact.modified,"..tostring(os.date("%Y,%m,%d,%H,%M,%S,%y,%B,%b,%I,%p", tonumber(info.time_updated) or 0)))
 		addFact("ws_screenshots", info.preview_url) --#TODO: How to grab ALL preview images?
 		addFact("ws_tags", "jazz.fact.tags,"..tostring(getAddonTags(info)))
 
@@ -63,8 +65,8 @@ local function getWorkshopFacts(wsid, addFact)
 
 		local comments = task.Await(commentTask)
 		if #comments > 0 then
-			local comm = table.Random(comments)
-			addFact("comment", "\"" .. comm.message .. "\"\n-" .. comm.author)
+			local comm = table.remove(comments,math.random(#comments))
+			addFact("comment", string.Replace("“" .. comm.message .. "”\n-" .. comm.author,",","‚"))--replaces comma with U+201A "Single Low-9 Quotation Mark" (commas in comments break running through screen localization)
 		end
 	end
 end
@@ -86,15 +88,18 @@ local function getBSPFacts(mapname, wsid, addFact)
 
 	-- Load the map asynchronously first
 	local bsp = bsp2.LoadBSP( mapname, nil, loadLumps )
-	task.Await(bsp:GetLoadTask())
+	if bsp ~= nil then
+		task.Await(bsp:GetLoadTask())
 
-	-- Now grab map facts
-	addFact("map_size", "jazz.fact.mapsize,"..tostring(getMapSize(bsp)))
-	addFact("skybox", "jazz.fact.skybox,"..tostring(getSkybox(bsp)))
-	addFact("map_comment", "jazz.fact.metadata,"..tostring(getComment(bsp))) -- Almost all decompiled maps will have a comment
-	addFact("brush_count", "jazz.fact.brushes,"..tostring(table.Count(bsp.brushes or {})))
-	addFact("static_props", "jazz.fact.staticprops,"..tostring(table.Count(bsp.props or {})))
-	addFact("entity_count", "jazz.fact.entities,"..tostring(table.Count(bsp.entities or {})))
+		-- Now grab map facts
+		addFact("map_size", "jazz.fact.mapsize,"..tostring(getMapSize(bsp)))
+		addFact("skybox", "jazz.fact.skybox,"..tostring(getSkybox(bsp)))
+		addFact("map_comment", "jazz.fact.metadata,"..tostring(getComment(bsp))) -- Almost all decompiled maps will have a comment
+		addFact("brush_count", "jazz.fact.brushes,"..tostring(table.Count(bsp.brushes or {})))
+		addFact("static_props", "jazz.fact.staticprops,"..tostring(table.Count(bsp.props or {})))
+		addFact("entity_count", "jazz.fact.entities,"..tostring(table.Count(bsp.entities or {})))
+	end
+	--todo: while this nil check fixes the lua error, we probably should put some sort of warning here because maps that do this aren't going to work
 	addFact("map_name", "jazz.fact.map,"..tostring(mapname))
 end
 

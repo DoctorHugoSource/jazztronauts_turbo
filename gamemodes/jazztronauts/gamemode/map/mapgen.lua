@@ -64,8 +64,29 @@ local AcceptEntClass = {
 	["prop_physics_multiplayer"] = true,
 	["prop_physics_respawnable"] = true,
 	["prop_dynamic"] = true,
+	["prop_dynamic_override"] = true,
 	["prop_ragdoll"] = true,
 	["prop_door_rotating"] = true,
+	--let's get esoteric wee
+	["gmod_tool"] = true,
+	["gmod_camera"] = true,
+	["simple_physics_prop"] = true, --created by phys_convert
+	["helicopter_chunk"] = true,
+	["grenade_helicopter"] = true,
+	["gib"] = true,
+	["rpg_missile"] = true,
+	["apc_missile"] = true,
+	["npc_grenade_bugbait"] = true;
+	["phys_magnet"] = true,
+	["prop_ragdoll_attached"] = true,
+	["gmod_wire_hoverdrivecontroler"] = true,
+	["weapon_striderbuster"] = true,
+	["npc_satchel"] = true, --SLAM
+	["npc_tripmine"] = true, --SLAM
+	["grenade_ar2"] = true,
+	["combine_mine"] = true,
+	["env_headcrabcanister"] = true,
+	["prop_thumper"] = true,
 }
 
 local IgnoreEntClass = {
@@ -83,7 +104,7 @@ function CanSnatch(ent)
 	if IgnoreEntClass[ent_class] then return false end
 
 	-- Assume this flag on this flag becomes a thing
-	if ent.IgnoreForSnatch then return true end
+	if ent.IgnoreForSnatch then return false end
 
 	-- Weapons held by players
 	if ent:IsWeapon() and IsValid(ent:GetParent()) and ent:GetParent():IsPlayer() then return false end
@@ -99,14 +120,17 @@ function CanSnatch(ent)
 
 	-- Good bye Dr. Kleiner...
 	if ent:IsNPC() then return true end
-	
-	-- delorean's wheels
+
+	-- Delorean's wheels
 	if ent_class == "prop_physics" and IsValid(ent:GetParent()) and ent:GetParent():GetClass() == "sent_sakarias_carwheel" then return false end
 
 	-- Certain specific class names to be checked.
 	if string.find(ent_class, "weapon_") ~= nil then return true end
 	if string.find(ent_class, "prop_vehicle") ~= nil then return true end
 	if string.find(ent_class, "item_") ~= nil then return true end
+
+	--Weapons not using "weapon_" in their name
+	if ent:IsWeapon() then return true end
 
 	-- ???
 	-- if string.find(ent_class, "jazz_bus_") ~= nil then return true end
@@ -413,11 +437,11 @@ if SERVER then
 
 		local maxs, mins = Vector(winfo.world_maxs), Vector(winfo.world_mins)
 
-		-- Calculate only area, ignoring Z because people make bigass fucking skyboxes
-		local area = math.sqrt(math.pow(maxs.x - mins.x, 2) + math.pow(maxs.y - mins.y, 2))
-		print(area)
+		-- Calculate only length across the area, ignoring Z because people make bigass fucking skyboxes
+		local length = math.sqrt(math.pow(maxs.x - mins.x,2) + math.pow(maxs.y - mins.y,2))
+		print(length)
 		-- Shard count dependent on map size
-		local shardcount = math.max(1, math.Remap(area, 8000, 100000, 4, 24))
+		local shardcount = math.Remap(length, 8000, 100000, 4, 24)
 		return math.ceil(shardcount)
 	end
 
