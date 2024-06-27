@@ -38,7 +38,7 @@ function PLAYER:Loadout()
 
 	self.Player:RemoveAllAmmo()
 	self.Player:SwitchToDefaultWeapon()
-	self.Player:Give( "weapon_vrmod_empty" )
+	self.Player:Give( "weapon_vrmod_empty" ) -- for vrmod players, should add a  "is in vr" check here sometime
 
 
 end

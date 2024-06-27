@@ -66,6 +66,7 @@ function PLAYER:Loadout()
 	end
 
 	--self.Player:Give( "gmod_tool" )
+	self.Player:Give( "gmod_camera" )
 	self.Player:Give( "weapon_physgun" )
 	self.Player:Give( "weapon_buscaller" )
 	self.Player:Give( "weapon_propsnatcher" )
@@ -73,6 +74,7 @@ function PLAYER:Loadout()
 
 	self.Player:SelectWeapon( "weapon_propsnatcher" )
 
+	-- allow for a single player 'exploration-only' type of experience, no stealing but just map traveling
 	if game.SinglePlayer() then
 		self.Player:StripWeapon("weapon_physgun")
 		self.Player:StripWeapon("weapon_propsnatcher")
@@ -87,7 +89,7 @@ function PLAYER:Loadout()
 
 		for k, v in pairs(ents.FindByClass("jazz_shard")) do
 			v:Remove()
-		
+
 		end
 	end
 
