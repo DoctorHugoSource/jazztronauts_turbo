@@ -4,7 +4,7 @@ if SERVER then
 end
 
 SWEP.Base					= "weapon_basehold"
-SWEP.PrintName				= JazzLocalize("test snatcher")
+SWEP.PrintName				= jazzloc.Localize("test snatcher")
 SWEP.Slot					= 0
 SWEP.Category				= "#jazz.weapon.category"
 SWEP.WepSelectIcon			= Material( "weapons/weapon_propsnatcher.png" )
