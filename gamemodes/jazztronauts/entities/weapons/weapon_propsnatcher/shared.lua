@@ -103,23 +103,25 @@ local snatch_world_speed = jstore.RegisterSeries("snatch_world_speed", 10000, 10
 })
 
 local snatch_instant = jstore.Register("snatch_instant", 10000000, {  -- for super lategame
-	name = JazzLocalize("Instant world stealing"),
-	cat = JazzLocalize("jazz.weapon.snatcher"),
-	desc = JazzLocalize("Steal brushes instantly"),
+	name = jazzloc.Localize("Instant world stealing"),
+	cat = jazzloc.Localize("jazz.weapon.snatcher"),
+	desc = jazzloc.Localize("Steal brushes instantly"),
 	requires = snatch_world,
 	type = "upgrade"
 })
+
 local snatch_infiniterange = jstore.Register("snatch_infiniterange", 10000000, {  -- for super lategame
-	name = JazzLocalize("Infinite snatch range"),
-	cat = JazzLocalize("jazz.weapon.snatcher"),
-	desc = JazzLocalize("Give your snatcher infinite range"),
+	name = jazzloc.Localize("Infinite snatch range"),
+	cat = jazzloc.Localize("jazz.weapon.snatcher"),
+	desc = jazzloc.Localize("Give your snatcher infinite range"),
 	requires = snatch_instant,
 	type = "upgrade"
 })
+
 local snatch_sonicsteal = jstore.Register("snatch_sonicsteal", 75000, {  -- super fast stealing for fun
-	name = JazzLocalize("Supersonic Aim"),
-	cat = JazzLocalize("jazz.weapon.snatcher"),
-	desc = JazzLocalize("Increases your propsnatcher's auto-firerate to ridiculous levels."),
+	name = jazzloc.Localize("Supersonic Aim"),
+	cat = jazzloc.Localize("jazz.weapon.snatcher"),
+	desc = jazzloc.Localize("Increases your propsnatcher's auto-firerate to ridiculous levels."),
 	requires = snatch2,
 	type = "upgrade"
 })
@@ -162,8 +164,7 @@ function SWEP:SetUpgrades(overpowered)
 	self.AutoAimCone = AimConeDefault + jstore.GetSeries(owner, snatch_cone) * 3.3
 
 	-- Steal range
-
-	local rangeLevel = (overpoweredupgrade and 10000) or (overpowered and 10) or jstore.GetSeries(owner, snatch_range)
+	local rangeLevel = (overpowered or overpoweredrange) and 10000 or jstore.GetSeries(owner, snatch_range)  -- changed op range to 10k because fuck it just give em the entire map
 	self.MaxRange	= LongRangeDefault + rangeLevel * 150
 	self.CloseRange = ShortRangeDefault + rangeLevel * 25
 
@@ -174,12 +175,15 @@ function SWEP:SetUpgrades(overpowered)
 	self.CanStealWorld = unlocks.IsUnlocked("store", owner, snatch_world) or overpowered
 
 	-- How fast they can steal the world
-	self.WorldStealSpeed = (overpoweredbrush and math.huge) or (overpowered and math.huge) (jstore.GetSeries(owner, snatch_world_speed) + 1)
+	self.WorldStealSpeed = (overpowered or overpoweredbrush) and math.huge or (jstore.GetSeries(owner, snatch_world_speed) + 1)
 
 	-- Allow multi-tasking?
 	self.CanMultitask = unlocks.IsUnlocked("store", owner, snatch_multi) or overpowered
 
+	-- upgrade automatic snatch firerate?
 	self.MinFireDelay = unlocks.IsUnlocked("store", owner, snatch_sonicsteal) and 0.016 or 0.1
+
+	self.WarmUpTime = unlocks.IsUnlocked("store", owner, snatch_sonicsteal) and 0.3 or 1
 
 end
 
