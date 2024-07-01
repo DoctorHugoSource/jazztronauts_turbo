@@ -36,11 +36,8 @@ function ENT:SetMap(mapname, workshopID)
 	self:SetDestination(mapname)
 	print ("map setted!!")
 	print (mapname)
-
-	if IsValid(jazztardis) then
-		local jazztardismap = mapname
-		jazztardis:SetData("jazz_destination", jazztardismap, true)
-	end
-	self:SetWorkshopID(workshopID)
-	self:SetMapProgress(self:ToProgressMask(mapname))
+	GlobalJazzTardisMap = mapname  -- i know global variables are bad but if i use tardisdata here, it's only sent to the tardis when this function runs
+								   -- doing it this way means the variable remains accessible even if, say, a tardis wants to access it *after* this function has run
+	self:SetWorkshopID(workshopID)																			  -- (like if a tardis is spawned after this function ran)
+	self:SetMapProgress(self:ToProgressMask(mapname))			   -- it also means it's accessible to *any* tardis and not only the ones that received the tardisdata
 end
