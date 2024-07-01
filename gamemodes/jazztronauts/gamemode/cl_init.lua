@@ -20,7 +20,7 @@ GM.HideHUD = {
 	"CHudBattery",
 	"CHudAmmo",
 	"CHudSecondaryAmmo",
-	"CHudCrosshair",
+	-- "CHudCrosshair",  -- allow crosshair to be enabled to interact with tardis controls more easily
 }
 
 local isInSpecialMap = mapcontrol.IsInHub() or mapcontrol.IsInEncounter()
